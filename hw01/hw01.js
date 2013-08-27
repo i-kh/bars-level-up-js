@@ -12,13 +12,15 @@
  */
 
 /**
- * Создает экземпляр воина
+ * Создает экземпляр 	воина
  * @param {String} name Имя воина.
  * @param {Number} level Уровень воина.
  */
-function Warrior(name, level){
-  // Ваш код здесь...
-}
+
+function Warrior (name, level){
+  this.name = name;
+  this.level = level;
+};
 
 /**
  * Задание 2. Добавить метод attack нашему воину.
@@ -34,7 +36,7 @@ function Warrior(name, level){
  * @return {Number} Урон, наносимой атакой.
  */
 Warrior.prototype.attack = function() {
-  // Ваш код здесь...
+  return this.level*0.1;
 };
 
 /**
@@ -51,17 +53,37 @@ Warrior.prototype.attack = function() {
  * @param {String} name Имя джедая.
  * @param {Number} level Уровень джедая.
  */
+
+/* function extend(Child, Parent) {
+    var F = function() { }
+    F.prototype = Parent.prototype;
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+    Child.superclass = Parent.prototype;
+
+}*/
+
+
 function Jedi (name, level) {
-  // Ваш код здесь...
-}
+  // this.prototype.constructor(name,level);
+  //Jedi.prototype.constructor(name,level);
+  this.constructor.call(this,name,level);
+  this.sideOfForce='light';
+};
+
+Jedi.prototype= new Warrior();
 
 /**
  * Создает экземпляр ситха
  * @param {String} name Имя ситха.
  * @param {Number} level Уровень ситха.
  */
-// Ваш код здесь...
-
+function Sith(name,level){
+ //this.prototype.constructor.call(this,name,level);
+ this.constructor.call(this,name,level);
+ this.sideOfForce='dark';
+};
+Sith.prototype= new Warrior();
 
 /**
  * Метод произнесения кодекса.
@@ -70,8 +92,13 @@ function Jedi (name, level) {
  * @name Warrior.getCode
  * @return {String} Кодекс воина.
  */
-// Ваш код здесь...
-
+Warrior.prototype.getCode=function(){
+	if  (this instanceof Sith){
+		return ("Спокойствие — ложь, есть только страсть...");
+	}else{
+		return ("Нет волнения — есть покой...");
+	}
+};
 
 /**
  * Задание 4. Добавить метод toLightSide классу Jedi.
@@ -91,7 +118,18 @@ function Jedi (name, level) {
  * @throws 
  * Если призываемый объект не является ситхом, выкидывается исключение.
  */
-// Ваш код здесь...
+Jedi.prototype.toLightSide=function(sith){
+	if (sith instanceof Sith) {
+		if (this.level>=sith.level){
+			sith.sideOfForce='light';
+		} else {
+			this.sideOfForce='dark';
+		}
+	} else {
+		throw new Error("Invalid argument");
+		// throw new Error('Ты неинтересен мне, воин.');
+	}
+};
 
 
 /**
@@ -112,4 +150,12 @@ function Jedi (name, level) {
  * @throws 
  * Если призываемый объект не является джедаем, выкидывается исключение.
  */
-// Ваш код здесь...
+Sith.prototype.toDarkSide=function(jedi){
+ console.log(jedi instanceof Jedi, jedi.name);
+ if(jedi instanceof Jedi){
+ 	jedi.toLightSide(this);
+ }else{
+ 	throw new Error("Invalid argument");
+ 	//throw new Error('Ты на правильной стороне, воин');
+ }
+}
